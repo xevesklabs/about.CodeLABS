@@ -1,0 +1,1857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CodeLABS — Build Something Great</title>
+  <meta name="description" content="CodeLABS is a student technical club focused on development, AI/ML, technical problem-solving, real projects, workshops, and hackathons." />
+  <meta property="og:title" content="CodeLABS — Build Something Great" />
+  <meta property="og:description" content="A student technical club built around projects, hackathons, AI/ML, development, and technical problem-solving." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://thecodelabs.org/" />
+  <meta name="theme-color" content="#f4f3ef" />
+  <link rel="icon" type="image/png" href="logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ═══════════════════════════════════════════
+       DESIGN TOKENS — CRIMSON + BLACK SYSTEM
+    ═══════════════════════════════════════════ */
+    :root {
+      /* Backgrounds */
+      --bg:          #f5f4f2;
+      --bg-warm:     #edecea;
+      --surface:     #ffffff;
+      --surface-tint:#fdf0f2;
+      --surface-2:   #f9f8f8;
+
+      /* Text */
+      --ink:         #0f0f0f;
+      --ink-2:       #3a3a3a;
+      --muted:       #787878;
+
+      /* Accent palette — crimson + blacks */
+      --accent:      #dc143c;
+      --accent-light:#fde8ec;
+      --accent-dark: #a00e2b;
+      --cyan:        #1a1a1a;
+      --cyan-light:  #e8e8e8;
+      --coral:       #8c1020;
+      --coral-light: #f5dde0;
+      --green:       #222222;
+      --green-light: #e5e5e5;
+      --gold:        #444444;
+      --gold-light:  #e8e8e8;
+
+      /* Structure */
+      --radius-sm:   8px;
+      --radius:      16px;
+      --radius-lg:   24px;
+      --border:      rgba(220,20,60,0.14);
+      --border-soft: rgba(15,15,15,0.09);
+      --shadow-sm:   0 2px 12px rgba(15,15,15,0.06);
+      --shadow:      0 4px 24px rgba(15,15,15,0.10);
+      --shadow-lg:   0 12px 48px rgba(15,15,15,0.14);
+
+      /* Typography */
+      --font:        'Space Grotesk', sans-serif;
+      --mono:        'JetBrains Mono', monospace;
+    }
+
+    /* ═══════════════════════════════════════════
+       RESET
+    ═══════════════════════════════════════════ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--font);
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+    ::selection { background: var(--accent); color: #fff; }
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; }
+
+    /* reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    /* ═══════════════════════════════════════════
+       BACKGROUND SYSTEM
+    ═══════════════════════════════════════════ */
+    .page-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    /* Dot grid */
+    .page-bg::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(circle, rgba(220,20,60,0.14) 1px, transparent 1px);
+      background-size: 32px 32px;
+      opacity: 0.6;
+    }
+
+    /* Soft gradient blobs */
+    .page-bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 10% 20%, rgba(220,20,60,0.06) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 60% at 90% 70%, rgba(26,26,26,0.05) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 40% at 50% 50%, rgba(34,34,34,0.03) 0%, transparent 70%);
+    }
+
+    /* Floating bg symbols */
+    .bg-sym {
+      position: fixed;
+      font-family: var(--mono);
+      font-size: 13px;
+      color: rgba(220,20,60,0.1);
+      pointer-events: none;
+      user-select: none;
+      animation: bg-drift var(--d,12s) ease-in-out var(--dl,0s) infinite;
+    }
+    @keyframes bg-drift {
+      0%,100% { transform: translateY(0) rotate(0deg); }
+      50%      { transform: translateY(-18px) rotate(4deg); }
+    }
+
+    /* ═══════════════════════════════════════════
+       LAYOUT
+    ═══════════════════════════════════════════ */
+    .wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 28px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .section {
+      padding: 100px 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .section-alt { background: var(--surface-2); }
+
+    /* ═══════════════════════════════════════════
+       TYPOGRAPHY
+    ═══════════════════════════════════════════ */
+    .section-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 20px;
+    }
+    .section-label::before {
+      content: '';
+      display: block;
+      width: 24px;
+      height: 2px;
+      background: var(--accent);
+      border-radius: 2px;
+    }
+
+    .headline-xl {
+      font-size: clamp(56px, 10vw, 116px);
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      line-height: 0.92;
+    }
+    .headline-lg {
+      font-size: clamp(38px, 6vw, 72px);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.0;
+    }
+    .headline-md {
+      font-size: clamp(26px, 4vw, 48px);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+    }
+    .headline-sm {
+      font-size: clamp(20px, 3vw, 30px);
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    .text-accent   { color: var(--accent); }
+    .text-cyan     { color: var(--cyan); }
+    .text-coral    { color: var(--coral); }
+    .text-green    { color: var(--green); }
+    .text-muted    { color: var(--muted); }
+    .text-ink2     { color: var(--ink-2); }
+
+    .grad-accent {
+      background: linear-gradient(135deg, var(--accent), #a00e2b);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .grad-warm {
+      background: linear-gradient(135deg, var(--coral), var(--gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* ═══════════════════════════════════════════
+       BUTTONS
+    ═══════════════════════════════════════════ */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 26px;
+      border-radius: var(--radius-sm);
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      border: none;
+      text-decoration: none;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1),
+                  box-shadow 0.22s ease;
+    }
+
+    .btn-apply {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(220,20,60,0.32);
+    }
+    .btn-apply:hover {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 10px 32px rgba(220,20,60,0.42);
+    }
+    .btn-apply:active { transform: translateY(0) scale(0.99); }
+
+    .btn-outline {
+      background: var(--surface);
+      color: var(--ink);
+      border: 1.5px solid var(--border-soft);
+      box-shadow: var(--shadow-sm);
+    }
+    .btn-outline:hover {
+      transform: translateY(-3px) scale(1.02);
+      border-color: var(--accent);
+      color: var(--accent);
+      box-shadow: var(--shadow);
+    }
+    .btn-outline:active { transform: translateY(0) scale(0.99); }
+
+    .btn-arrow { display: inline-flex; align-items: center; gap: 8px; }
+    .btn-arrow .arr { transition: transform 0.2s ease; display: inline-block; }
+    .btn-arrow:hover .arr { transform: translate(3px,-3px); }
+
+    /* ═══════════════════════════════════════════
+       NAVBAR
+    ═══════════════════════════════════════════ */
+    #nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 200;
+      padding: 14px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: background 0.3s, box-shadow 0.3s;
+    }
+    #nav.scrolled {
+      background: rgba(244,243,239,0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 1px 0 var(--border-soft);
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--font);
+      font-weight: 700;
+      font-size: 18px;
+      color: var(--ink);
+      letter-spacing: -0.02em;
+    }
+    .nav-logo img {
+      width: 34px;
+      height: 34px;
+      object-fit: contain;
+    }
+
+    .nav-actions { display: flex; align-items: center; gap: 10px; }
+
+    /* ═══════════════════════════════════════════
+       HERO
+    ═══════════════════════════════════════════ */
+    #hero {
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 120px 28px 80px;
+      position: relative;
+      z-index: 1;
+      overflow: hidden;
+    }
+
+    .hero-inner { max-width: 1100px; margin: 0 auto; width: 100%; }
+
+    /* Floating dev-ui labels in hero */
+    .hero-floats {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+    .hf {
+      position: absolute;
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      padding: 5px 10px;
+      border-radius: 100px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.7);
+      backdrop-filter: blur(4px);
+      color: var(--accent);
+      opacity: 0;
+      animation: hf-appear 0.6s ease var(--d,1s) forwards,
+                 hf-float var(--fd,8s) ease-in-out var(--fds,0s) infinite;
+    }
+    @keyframes hf-appear {
+      to { opacity: 1; }
+    }
+    @keyframes hf-float {
+      0%,100% { transform: translateY(0); }
+      50%      { transform: translateY(-8px); }
+    }
+
+    /* Terminal cursor blink */
+    .cursor {
+      display: inline-block;
+      width: 3px;
+      height: 1em;
+      background: var(--accent);
+      vertical-align: middle;
+      margin-left: 2px;
+      border-radius: 1px;
+      animation: blink 1.1s step-end infinite;
+    }
+    @keyframes blink {
+      0%,100% { opacity: 1; }
+      50%      { opacity: 0; }
+    }
+
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: var(--accent-light);
+      padding: 6px 14px;
+      border-radius: 100px;
+      border: 1px solid var(--border);
+      margin-bottom: 28px;
+      opacity: 0;
+      animation: fade-up 0.7s ease 0.2s forwards;
+    }
+    .hero-tag .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      animation: pulse-dot 2s ease infinite;
+    }
+    @keyframes pulse-dot {
+      0%,100% { box-shadow: 0 0 0 0 rgba(34,34,34,0.4); }
+      50%      { box-shadow: 0 0 0 5px rgba(34,34,34,0); }
+    }
+
+    .hero-headline {
+      opacity: 0;
+      animation: fade-up 0.7s ease 0.4s forwards;
+    }
+
+    .hero-sub-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-top: 24px;
+      opacity: 0;
+      animation: fade-up 0.7s ease 0.6s forwards;
+      flex-wrap: wrap;
+    }
+
+    .hero-sub-tag {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      padding: 4px 10px;
+      border: 1px solid var(--border-soft);
+      border-radius: 100px;
+      background: var(--surface);
+    }
+
+    .hero-desc {
+      margin-top: 24px;
+      max-width: 520px;
+      font-size: 18px;
+      color: var(--ink-2);
+      line-height: 1.75;
+      opacity: 0;
+      animation: fade-up 0.7s ease 0.7s forwards;
+    }
+
+    .hero-cta {
+      margin-top: 40px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      opacity: 0;
+      animation: fade-up 0.7s ease 0.9s forwards;
+    }
+
+    .hero-scroll {
+      position: absolute;
+      bottom: 36px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      color: var(--muted);
+      text-transform: uppercase;
+      animation: fade-in 0.8s ease 1.6s both;
+    }
+    .scroll-bar {
+      width: 1px;
+      height: 36px;
+      background: linear-gradient(to bottom, var(--accent), transparent);
+      animation: scroll-line 2s ease infinite;
+    }
+    @keyframes scroll-line {
+      0%,100% { opacity: 0.4; transform: scaleY(0.8); }
+      50%      { opacity: 1; transform: scaleY(1); }
+    }
+
+    /* ═══════════════════════════════════════════
+       ABOUT
+    ═══════════════════════════════════════════ */
+    #about { background: var(--surface); }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+
+    /* Fake terminal */
+    .terminal {
+      background: var(--ink);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+      font-family: var(--mono);
+      font-size: 13px;
+    }
+    .terminal-bar {
+      background: #2d2c40;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .t-dot {
+      width: 11px; height: 11px;
+      border-radius: 50%;
+    }
+    .t-dot.r { background: #ff5f57; }
+    .t-dot.y { background: #febc2e; }
+    .t-dot.g { background: #28c840; }
+    .t-title {
+      margin-left: 8px;
+      font-size: 11px;
+      color: #5a5a7a;
+      letter-spacing: 0.05em;
+    }
+    .terminal-body {
+      padding: 24px 22px;
+      color: #c0bfe0;
+      line-height: 2;
+    }
+    .t-prompt { color: #5b50e8; }
+    .t-cmd    { color: #e8e6ff; }
+    .t-out    { color: #7b7aaa; padding-left: 2px; }
+    .t-green  { color: #00b87a; }
+    .t-status { color: #febc2e; }
+
+    .about-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 28px;
+    }
+    .a-pill {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      padding: 7px 14px;
+      border-radius: 100px;
+      background: var(--surface-tint);
+      border: 1px solid var(--border);
+      color: var(--accent);
+      transition: background 0.2s, transform 0.2s;
+    }
+    .a-pill:hover {
+      background: var(--accent-light);
+      transform: translateY(-2px);
+    }
+
+    /* ═══════════════════════════════════════════
+       MISSION BANNER
+    ═══════════════════════════════════════════ */
+    #mission {
+      background: var(--ink);
+      color: #fff;
+      text-align: center;
+      padding: 80px 28px;
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+    #mission::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(circle, rgba(220,20,60,0.25) 1px, transparent 1px);
+      background-size: 28px 28px;
+      opacity: 0.5;
+    }
+    .mission-quote {
+      font-size: clamp(26px, 5vw, 52px);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.25;
+      max-width: 780px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+    .mission-sub {
+      margin-top: 20px;
+      font-size: 16px;
+      color: rgba(255,255,255,0.55);
+      max-width: 480px;
+      margin-left: auto;
+      margin-right: auto;
+      position: relative;
+      z-index: 1;
+      line-height: 1.7;
+    }
+
+    /* ═══════════════════════════════════════════
+       BRANCHES
+    ═══════════════════════════════════════════ */
+    #branches { background: var(--surface); }
+
+    .branches-grid {
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: 20px;
+      margin-top: 56px;
+    }
+
+    .branch-card {
+      background: var(--surface);
+      border: 1.5px solid var(--border-soft);
+      border-radius: var(--radius);
+      padding: 32px 28px 36px;
+      position: relative;
+      overflow: hidden;
+      cursor: default;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1),
+                  box-shadow 0.3s ease,
+                  border-color 0.3s ease;
+    }
+    .branch-card:hover {
+      transform: translateY(-8px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--card-color, var(--accent));
+    }
+
+    /* color strip top */
+    .branch-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--card-color, var(--accent));
+      border-radius: var(--radius) var(--radius) 0 0;
+      transform: scaleX(0);
+      transition: transform 0.35s ease;
+    }
+    .branch-card:hover::before { transform: scaleX(1); }
+
+    /* background watermark text */
+    .branch-watermark {
+      position: absolute;
+      bottom: -10px;
+      right: -8px;
+      font-family: var(--mono);
+      font-size: 64px;
+      font-weight: 700;
+      line-height: 1;
+      color: var(--card-color, var(--accent));
+      opacity: 0.05;
+      pointer-events: none;
+      transition: opacity 0.3s;
+      user-select: none;
+    }
+    .branch-card:hover .branch-watermark { opacity: 0.09; }
+
+    .branch-card.dev  { --card-color: var(--accent); }
+    .branch-card.ai   { --card-color: var(--cyan); }
+    .branch-card.tech { --card-color: var(--coral); }
+
+    .branch-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 5px 12px;
+      border-radius: 100px;
+      margin-bottom: 20px;
+    }
+    .branch-card.dev  .branch-chip { background: var(--accent-light); color: var(--accent); }
+    .branch-card.ai   .branch-chip { background: var(--cyan-light);   color: var(--cyan); }
+    .branch-card.tech .branch-chip { background: var(--coral-light);  color: var(--coral); }
+
+    .branch-title {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      margin-bottom: 10px;
+    }
+    .branch-desc {
+      color: var(--ink-2);
+      font-size: 14px;
+      line-height: 1.75;
+      margin-bottom: 22px;
+    }
+    .branch-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+    .branch-tag {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.06em;
+      padding: 4px 10px;
+      border-radius: 6px;
+      background: var(--bg-warm);
+      color: var(--muted);
+      border: 1px solid var(--border-soft);
+    }
+
+    /* ═══════════════════════════════════════════
+       ACTIVITIES — CONNECTED JOURNEY
+    ═══════════════════════════════════════════ */
+    #activities { background: var(--bg); }
+
+    .journey {
+      margin-top: 64px;
+      display: grid;
+      grid-template-columns: 1fr 60px 1fr;
+      gap: 0;
+      align-items: start;
+    }
+
+    .journey-col { display: flex; flex-direction: column; gap: 48px; }
+
+    .journey-connector {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 60px;
+      gap: 0;
+    }
+    .j-node {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--accent);
+      flex-shrink: 0;
+    }
+    .j-line {
+      width: 1px;
+      flex: 1;
+      background: linear-gradient(to bottom, var(--accent), var(--cyan));
+      opacity: 0.3;
+      min-height: 80px;
+    }
+
+    .act-card {
+      background: var(--surface);
+      border: 1.5px solid var(--border-soft);
+      border-radius: var(--radius);
+      padding: 32px 28px;
+      box-shadow: var(--shadow-sm);
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1),
+                  box-shadow 0.3s ease;
+    }
+    .act-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .act-shape-wrap {
+      margin-bottom: 18px;
+    }
+
+    /* CSS Shapes — activities */
+    .shape-cube {
+      width: 36px; height: 36px;
+      border: 2px solid var(--accent);
+      position: relative;
+      transform: rotate(15deg) skewX(-8deg);
+      animation: cube-breathe 5s ease infinite;
+    }
+    .shape-cube::before {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      border: 2px solid rgba(220,20,60,0.25);
+      transform: translate(7px,-7px);
+    }
+    @keyframes cube-breathe {
+      0%,100% { transform: rotate(15deg) skewX(-8deg) scale(1); }
+      50%      { transform: rotate(18deg) skewX(-8deg) scale(1.07); }
+    }
+
+    .shape-pentagon {
+      width: 36px; height: 36px;
+      background: transparent;
+      clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
+      border: 2px solid var(--coral);
+      position: relative;
+      animation: pent-spin 6s ease infinite;
+    }
+    .shape-pentagon::before {
+      content: '';
+      position: absolute;
+      inset: 4px;
+      clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
+      background: rgba(140,16,32,0.1);
+    }
+    @keyframes pent-spin {
+      0%,100% { transform: rotate(0deg); }
+      50%      { transform: rotate(8deg) scale(1.05); }
+    }
+
+    .shape-diamond {
+      width: 32px; height: 32px;
+      border: 2px solid var(--cyan);
+      background: rgba(26,26,26,0.07);
+      transform: rotate(45deg);
+      position: relative;
+      animation: dia-pulse 4s ease infinite;
+    }
+    .shape-diamond::before {
+      content: '';
+      position: absolute;
+      inset: 6px;
+      border: 1px solid rgba(26,26,26,0.3);
+    }
+    @keyframes dia-pulse {
+      0%,100% { transform: rotate(45deg) scale(1); }
+      50%      { transform: rotate(45deg) scale(1.1); }
+    }
+
+    .shape-hexagon {
+      width: 38px; height: 38px;
+      background: linear-gradient(135deg, rgba(34,34,34,0.15), rgba(26,26,26,0.1));
+      clip-path: polygon(25% 0%,75% 0%,100% 50%,75% 100%,25% 100%,0% 50%);
+      border: none;
+      animation: hex-spin 9s linear infinite;
+    }
+    @keyframes hex-spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .act-word {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin-bottom: 10px;
+    }
+    .act-desc {
+      color: var(--ink-2);
+      font-size: 14px;
+      line-height: 1.75;
+      margin-bottom: 16px;
+    }
+    .act-details { display: flex; flex-direction: column; gap: 5px; }
+    .act-detail {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .act-detail::before { content: '›'; color: var(--accent); }
+
+    /* offset even cards for visual rhythm */
+    .journey-col:last-child { padding-top: 80px; }
+
+    /* ═══════════════════════════════════════════
+       MERIT SYSTEM
+    ═══════════════════════════════════════════ */
+    #merit { background: var(--surface); }
+
+    .merit-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: start;
+      margin-top: 56px;
+    }
+
+    .merit-track {
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .merit-tier {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      padding: 18px 22px;
+      background: var(--surface);
+      border: 1.5px solid var(--border-soft);
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-sm);
+      position: relative;
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+      cursor: default;
+    }
+    .merit-tier:hover {
+      transform: translateX(6px);
+      box-shadow: var(--shadow);
+      border-color: var(--tier-color, var(--accent));
+    }
+
+    .merit-connector {
+      display: flex;
+      align-items: center;
+      padding: 0 28px;
+      height: 28px;
+    }
+    .m-line {
+      width: 1px;
+      height: 28px;
+      background: linear-gradient(to bottom, var(--t-from), var(--t-to));
+      opacity: 0.4;
+      margin-left: 33px;
+    }
+
+    /* tier shapes — CSS only */
+    .tier-shape {
+      width: 44px; height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-sm);
+      flex-shrink: 0;
+      background: var(--tier-bg, rgba(220,20,60,0.08));
+    }
+
+    /* triangle */
+    .sh-triangle {
+      width: 0; height: 0;
+      border-left: 9px solid transparent;
+      border-right: 9px solid transparent;
+      border-bottom: 16px solid #dc143c;
+      animation: tri-bob 3.5s ease infinite;
+    }
+    @keyframes tri-bob {
+      0%,100% { transform: translateY(0); }
+      50%      { transform: translateY(-3px); }
+    }
+
+    /* iso cube */
+    .sh-cube {
+      width: 18px; height: 18px;
+      background: var(--accent);
+      transform: rotate(45deg) skewX(-4deg) skewY(-4deg);
+      position: relative;
+      animation: cube-bob 4s ease infinite;
+    }
+    .sh-cube::before {
+      content: ''; position: absolute;
+      width: 100%; height: 100%;
+      background: rgba(220,20,60,0.5);
+      top: -100%; left: 0;
+      transform: skewY(-45deg);
+    }
+    .sh-cube::after {
+      content: ''; position: absolute;
+      width: 100%; height: 100%;
+      background: rgba(220,20,60,0.3);
+      top: 0; left: 100%;
+      transform: skewX(-45deg);
+    }
+    @keyframes cube-bob {
+      0%,100% { transform: rotate(45deg) skewX(-4deg) skewY(-4deg) scale(1); }
+      50%      { transform: rotate(48deg) skewX(-4deg) skewY(-4deg) scale(1.1); }
+    }
+
+    /* octagon */
+    .sh-octagon {
+      width: 24px; height: 24px;
+      background: transparent;
+      border: 2px solid var(--cyan);
+      clip-path: polygon(30% 0%,70% 0%,100% 30%,100% 70%,70% 100%,30% 100%,0% 70%,0% 30%);
+      animation: oct-spin 8s linear infinite;
+    }
+    @keyframes oct-spin { to { transform: rotate(360deg); } }
+
+    /* rhombus */
+    .sh-rhombus {
+      width: 20px; height: 20px;
+      background: var(--gold);
+      clip-path: polygon(50% 0%,100% 50%,50% 100%,0% 50%);
+      animation: rhom-pulse 3s ease infinite;
+    }
+    @keyframes rhom-pulse {
+      0%,100% { transform: scale(1); }
+      50%      { transform: scale(1.15); }
+    }
+
+    /* hexagon core */
+    .sh-hexcore {
+      width: 26px; height: 26px;
+      background: linear-gradient(135deg, var(--green), #1a1a1a);
+      clip-path: polygon(25% 0%,75% 0%,100% 50%,75% 100%,25% 100%,0% 50%);
+      animation: core-glow 2.5s ease infinite;
+    }
+    @keyframes core-glow {
+      0%,100% { filter: brightness(1) drop-shadow(0 0 0 transparent); }
+      50%      { filter: brightness(1.25) drop-shadow(0 0 8px rgba(34,34,34,0.6)); }
+    }
+
+    .tier-info { flex: 1; }
+    .tier-name {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+    .tier-pts {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--muted);
+      margin-top: 2px;
+      letter-spacing: 0.06em;
+    }
+
+    .tier-bar-wrap {
+      width: 72px;
+      height: 4px;
+      background: rgba(0,0,0,0.06);
+      border-radius: 100px;
+      overflow: hidden;
+    }
+    .tier-bar {
+      height: 100%;
+      border-radius: 100px;
+      background: var(--tier-color, var(--accent));
+      transform-origin: left;
+      transform: scaleX(0);
+      transition: transform 1.1s cubic-bezier(0.22,1,0.36,1);
+    }
+    .tier-bar.vis { transform: scaleX(1); }
+
+    /* merit right side */
+    .merit-note-panel {
+      background: var(--surface-tint);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px 28px;
+    }
+    .merit-note-panel h3 {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      letter-spacing: -0.01em;
+    }
+    .merit-note-panel p {
+      color: var(--ink-2);
+      font-size: 15px;
+      line-height: 1.75;
+    }
+    .merit-stat {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 24px;
+      padding: 16px;
+      background: var(--surface);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-soft);
+    }
+    .merit-stat-num {
+      font-family: var(--mono);
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1;
+    }
+    .merit-stat-label {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    /* ═══════════════════════════════════════════
+       WHO SHOULD JOIN
+    ═══════════════════════════════════════════ */
+    #join-who { background: var(--bg); }
+
+    .join-grid {
+      display: grid;
+      grid-template-columns: repeat(2,1fr);
+      gap: 14px;
+      margin-top: 48px;
+      max-width: 720px;
+    }
+    .join-card {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      background: var(--surface);
+      border: 1.5px solid var(--border-soft);
+      border-radius: var(--radius-sm);
+      padding: 18px 20px;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.25s ease, border-color 0.25s ease;
+    }
+    .join-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--border);
+    }
+    .join-check {
+      width: 26px; height: 26px;
+      border-radius: 8px;
+      background: var(--green-light);
+      color: var(--green);
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .join-text {
+      font-size: 14px;
+      color: var(--ink-2);
+      line-height: 1.6;
+    }
+
+    /* ═══════════════════════════════════════════
+       FINAL CTA
+    ═══════════════════════════════════════════ */
+    #final-cta {
+      background: var(--ink);
+      color: #fff;
+      text-align: center;
+      padding: 120px 28px;
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+    #final-cta::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(circle, rgba(220,20,60,0.2) 1px, transparent 1px);
+      background-size: 32px 32px;
+      opacity: 0.5;
+    }
+    #final-cta::after {
+      content: '';
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+      width: 700px; height: 700px;
+      background: radial-gradient(circle, rgba(220,20,60,0.15) 0%, transparent 65%);
+      pointer-events: none;
+    }
+
+    .cta-inner {
+      position: relative;
+      z-index: 2;
+      max-width: 660px;
+      margin: 0 auto;
+    }
+
+    .cta-mono-tag {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      color: rgba(220,20,60,0.9);
+      background: rgba(220,20,60,0.15);
+      padding: 6px 14px;
+      border-radius: 100px;
+      border: 1px solid rgba(220,20,60,0.3);
+      display: inline-block;
+      margin-bottom: 24px;
+    }
+
+    .cta-sub {
+      margin-top: 20px;
+      font-size: 16px;
+      color: rgba(255,255,255,0.55);
+      line-height: 1.75;
+    }
+
+    .cta-btns {
+      margin-top: 48px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      justify-content: center;
+    }
+
+    .btn-apply-dark {
+      background: var(--accent);
+      color: #fff;
+      padding: 16px 32px;
+      font-size: 13px;
+      box-shadow: 0 4px 24px rgba(220,20,60,0.5);
+    }
+    .btn-apply-dark:hover {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 12px 36px rgba(220,20,60,0.6);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: rgba(255,255,255,0.7);
+      border: 1.5px solid rgba(255,255,255,0.18);
+      padding: 16px 28px;
+    }
+    .btn-ghost:hover {
+      border-color: rgba(255,255,255,0.5);
+      color: #fff;
+      transform: translateY(-3px) scale(1.02);
+    }
+
+    /* ═══════════════════════════════════════════
+       FOOTER
+    ═══════════════════════════════════════════ */
+    footer {
+      background: var(--bg-warm);
+      border-top: 1px solid var(--border-soft);
+      padding: 36px 28px;
+      position: relative;
+      z-index: 1;
+    }
+    .footer-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .footer-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 16px;
+      letter-spacing: -0.01em;
+    }
+    .footer-logo img { width: 28px; height: 28px; object-fit: contain; }
+    .footer-links { display: flex; gap: 24px; flex-wrap: wrap; }
+    .footer-link {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      transition: color 0.2s;
+    }
+    .footer-link:hover { color: var(--accent); }
+    .footer-tag {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    /* ═══════════════════════════════════════════
+       REVEAL ANIMATIONS
+    ═══════════════════════════════════════════ */
+    .reveal {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+    .reveal.vis {
+      opacity: 1;
+      transform: none;
+    }
+    .reveal-left  { transform: translateX(-28px); }
+    .reveal-right { transform: translateX(28px); }
+    .reveal-left.vis, .reveal-right.vis { transform: none; }
+
+    .d1 { transition-delay: 0.08s; }
+    .d2 { transition-delay: 0.16s; }
+    .d3 { transition-delay: 0.24s; }
+    .d4 { transition-delay: 0.32s; }
+    .d5 { transition-delay: 0.40s; }
+
+    /* ═══════════════════════════════════════════
+       KEYFRAMES
+    ═══════════════════════════════════════════ */
+    @keyframes fade-up {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: none; }
+    }
+    @keyframes fade-in {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    /* ═══════════════════════════════════════════
+       FOCUS
+    ═══════════════════════════════════════════ */
+    :focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 4px;
+      border-radius: 4px;
+    }
+
+    /* ═══════════════════════════════════════════
+       RESPONSIVE
+    ═══════════════════════════════════════════ */
+    @media (max-width: 900px) {
+      .about-grid { grid-template-columns: 1fr; gap: 48px; }
+      .terminal { order: -1; }
+      .branches-grid { grid-template-columns: 1fr; gap: 16px; }
+      .journey { grid-template-columns: 1fr; gap: 20px; }
+      .journey-connector { display: none; }
+      .journey-col { gap: 20px; }
+      .journey-col:last-child { padding-top: 0; }
+      .merit-grid { grid-template-columns: 1fr; gap: 40px; }
+      .join-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 600px) {
+      .section { padding: 72px 0; }
+      #hero { padding: 96px 20px 56px; }
+      .wrap { padding: 0 20px; }
+      .nav-actions .btn-outline { display: none; }
+      .btn { padding: 13px 22px; font-size: 11px; }
+      .btn-apply-dark, .btn-ghost { padding: 15px 24px; }
+      .cta-btns { flex-direction: column; align-items: center; }
+      .cta-btns .btn { width: 100%; max-width: 320px; justify-content: center; }
+      .hero-cta .btn { width: 100%; justify-content: center; }
+      .hero-cta { flex-direction: column; }
+    }
+
+    @media (max-width: 420px) {
+      .branches-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ══ PAGE BACKGROUND ══ -->
+  <div class="page-bg" aria-hidden="true">
+    <!-- floating symbols scattered across page -->
+    <span class="bg-sym" style="top:8%;left:3%;--d:11s;--dl:0s;">{ }</span>
+    <span class="bg-sym" style="top:15%;left:88%;--d:14s;--dl:1s;">&lt;/&gt;</span>
+    <span class="bg-sym" style="top:32%;left:6%;--d:9s;--dl:2s;">01</span>
+    <span class="bg-sym" style="top:45%;left:94%;--d:13s;--dl:0.5s;">AI</span>
+    <span class="bg-sym" style="top:60%;left:2%;--d:15s;--dl:1.5s;">#</span>
+    <span class="bg-sym" style="top:72%;left:91%;--d:10s;--dl:3s;">ML</span>
+    <span class="bg-sym" style="top:85%;left:8%;--d:12s;--dl:0.8s;">( )</span>
+    <span class="bg-sym" style="top:22%;left:48%;--d:16s;--dl:2s;">=&gt;</span>
+    <span class="bg-sym" style="top:55%;left:52%;--d:13s;--dl:1s;">[ ]</span>
+  </div>
+
+  <!-- ══ NAVBAR ══ -->
+  <nav id="nav" role="navigation" aria-label="Main navigation">
+    <a class="nav-logo" href="https://thecodelabs.org/" target="_blank" rel="noopener noreferrer" aria-label="CodeLABS home">
+      <img src="logo.png" alt="CodeLABS logo" width="34" height="34" />
+      CodeLABS
+    </a>
+    <div class="nav-actions">
+      <a class="btn btn-outline btn-arrow" href="https://thecodelabs.org/" target="_blank" rel="noopener noreferrer" aria-label="Explore CodeLABS">
+        Explore <span class="arr" aria-hidden="true">↗</span>
+      </a>
+      <a class="btn btn-apply btn-arrow" href="https://apply.thecodelabs.org/" target="_blank" rel="noopener noreferrer" aria-label="Apply to CodeLABS">
+        Apply <span class="arr" aria-hidden="true">→</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- ══ HERO ══ -->
+  <section id="hero" aria-label="Hero">
+
+    <!-- floating dev-ui badges -->
+    <div class="hero-floats" aria-hidden="true">
+      <span class="hf" style="top:18%;left:72%;--d:1.2s;--fd:9s;--fds:0s;">// STUDENT TECHNICAL CLUB</span>
+      <span class="hf" style="top:72%;left:60%;--d:1.6s;--fd:11s;--fds:1s;">BUILD • LEARN • COMPETE</span>
+      <span class="hf" style="top:36%;left:5%;--d:2s;--fd:8s;--fds:2s;">DEVELOPMENT / AI / TECHNICAL</span>
+      <span class="hf" style="top:82%;left:8%;--d:1.8s;--fd:12s;--fds:0.5s;">v1.0.0 — thecodelabs.org</span>
+    </div>
+
+    <div class="hero-inner">
+      <div class="hero-tag">
+        <span class="dot"></span>
+        Student Technical Club
+      </div>
+
+      <div class="hero-headline">
+        <h1 class="headline-xl">
+          <span class="grad-accent">Code</span><span style="color:var(--ink)">LABS</span>
+        </h1>
+        <p class="headline-lg" style="color:var(--ink); margin-top:8px; font-weight:600;">
+          Build <span class="text-accent">something</span> Great<span class="cursor"></span>
+        </p>
+      </div>
+
+      <div class="hero-sub-row">
+        <span class="hero-sub-tag">Development</span>
+        <span class="hero-sub-tag">AI / ML</span>
+        <span class="hero-sub-tag">Technical</span>
+        <span class="hero-sub-tag">Hackathons</span>
+      </div>
+
+      <p class="hero-desc">
+        A student technical club built around real projects, hackathons, AI/ML,
+        full-stack development, and technical problem-solving.
+      </p>
+
+      <div class="hero-cta">
+        <a class="btn btn-apply btn-arrow" href="https://apply.thecodelabs.org/" target="_blank" rel="noopener noreferrer" style="font-size:13px;padding:15px 30px;" aria-label="Apply to CodeLABS">
+          Apply Now <span class="arr" aria-hidden="true">→</span>
+        </a>
+        <a class="btn btn-outline btn-arrow" href="https://thecodelabs.org/" target="_blank" rel="noopener noreferrer" style="font-size:13px;padding:15px 28px;" aria-label="Explore CodeLABS">
+          Explore CodeLABS <span class="arr" aria-hidden="true">↗</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="hero-scroll" aria-hidden="true">
+      <div class="scroll-bar"></div>
+      <span>scroll to build</span>
+    </div>
+  </section>
+
+  <!-- ══ ABOUT ══ -->
+  <section id="about" class="section" aria-labelledby="about-h">
+    <div class="wrap">
+      <div class="about-grid">
+
+        <!-- Text side -->
+        <div>
+          <p class="section-label reveal">01 / About</p>
+          <h2 id="about-h" class="headline-md reveal d1">
+            We don't just learn technology.<br/>
+            We <span class="grad-accent">build with it.</span>
+          </h2>
+          <p class="reveal d2" style="color:var(--ink-2);margin-top:20px;font-size:16px;line-height:1.8;">
+            CodeLABS is a student-run technical community focused entirely on
+            hands-on development. Real projects. Real teams. Real skills.
+            No notice boards. No fluff. Just builders doing actual work.
+          </p>
+          <div class="about-pills reveal d3">
+            <span class="a-pill">Real Projects</span>
+            <span class="a-pill">Hackathons</span>
+            <span class="a-pill">AI / ML</span>
+            <span class="a-pill">Full-Stack</span>
+            <span class="a-pill">Workshops</span>
+            <span class="a-pill">Competitive Programming</span>
+          </div>
+        </div>
+
+        <!-- Terminal visual -->
+        <div class="reveal reveal-right d2">
+          <div class="terminal" role="img" aria-label="Decorative terminal showing CodeLABS initialization">
+            <div class="terminal-bar">
+              <span class="t-dot r"></span>
+              <span class="t-dot y"></span>
+              <span class="t-dot g"></span>
+              <span class="t-title">codelabs — bash</span>
+            </div>
+            <div class="terminal-body">
+              <div><span class="t-prompt">~&nbsp;</span><span class="t-cmd">$ initialize codelabs</span></div>
+              <div>&nbsp;</div>
+              <div class="t-out">&gt; loading branches...</div>
+              <div class="t-out">&gt;&nbsp;<span style="color:#5b50e8">development</span>&nbsp;&nbsp;&nbsp;✓</div>
+              <div class="t-out">&gt;&nbsp;<span style="color:#0096c7">ai / ml</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;✓</div>
+              <div class="t-out">&gt;&nbsp;<span style="color:#f05d5e">technical</span>&nbsp;&nbsp;&nbsp;&nbsp;✓</div>
+              <div>&nbsp;</div>
+              <div class="t-out">&gt; loading activities...</div>
+              <div class="t-out">&gt;&nbsp;<span class="t-green">hackathons</span>&nbsp;&nbsp;&nbsp;active</div>
+              <div class="t-out">&gt;&nbsp;<span class="t-green">workshops</span>&nbsp;&nbsp;&nbsp;&nbsp;active</div>
+              <div class="t-out">&gt;&nbsp;<span class="t-green">projects</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;active</div>
+              <div>&nbsp;</div>
+              <div class="t-status">&gt; status: building... <span class="cursor" style="background:#febc2e;"></span></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ MISSION ══ -->
+  <section id="mission" aria-labelledby="mission-h">
+    <div class="wrap" style="position:relative;z-index:1;">
+      <p class="section-label reveal" style="color:rgba(220,20,60,0.8);justify-content:center;">02 / Mission</p>
+      <blockquote class="mission-quote reveal d1" id="mission-h">
+        Cultivate technical excellence by
+        <span style="color:#a00e2b;">building</span>,
+        <span style="color:#ff9a6c;">competing</span>, and
+        supporting one another's growth.
+      </blockquote>
+      <p class="mission-sub reveal d2">
+        CodeLABS exists for students who want to grow as developers, engineers,
+        and creators — through doing, not just studying.
+      </p>
+    </div>
+  </section>
+
+  <!-- ══ BRANCHES ══ -->
+  <section id="branches" class="section" aria-labelledby="branches-h">
+    <div class="wrap">
+      <p class="section-label reveal">03 / Branches</p>
+      <h2 id="branches-h" class="headline-md reveal d1">Choose your <span class="grad-accent">domain.</span></h2>
+      <p class="reveal d2" style="color:var(--ink-2);margin-top:12px;font-size:16px;max-width:500px;">
+        Three technical tracks — each with its own workshops, projects, and focus areas.
+      </p>
+
+      <div class="branches-grid" role="list">
+
+        <!-- DEVELOPMENT -->
+        <article class="branch-card dev reveal d2" role="listitem" tabindex="0">
+          <div class="branch-watermark" aria-hidden="true">&lt;/&gt;</div>
+          <div class="branch-chip" aria-hidden="true">&lt;/&gt; Development</div>
+          <h3 class="branch-title">Development</h3>
+          <p class="branch-desc">
+            Build full-stack applications end-to-end. Frontend, backend, APIs,
+            databases — from design to deployment.
+          </p>
+          <div class="branch-tags" aria-label="Topics">
+            <span class="branch-tag">Full-Stack</span>
+            <span class="branch-tag">Frontend</span>
+            <span class="branch-tag">Backend</span>
+            <span class="branch-tag">APIs</span>
+            <span class="branch-tag">Databases</span>
+          </div>
+        </article>
+
+        <!-- AI / ML -->
+        <article class="branch-card ai reveal d3" role="listitem" tabindex="0">
+          <div class="branch-watermark" aria-hidden="true">AI</div>
+          <div class="branch-chip" aria-hidden="true">◈ AI / ML</div>
+          <h3 class="branch-title">AI / ML</h3>
+          <p class="branch-desc">
+            Go beyond using models — understand how they work.
+            Train, fine-tune, and deploy real machine learning systems.
+          </p>
+          <div class="branch-tags" aria-label="Topics">
+            <span class="branch-tag">Model Training</span>
+            <span class="branch-tag">Fine-Tuning</span>
+            <span class="branch-tag">ML Pipelines</span>
+            <span class="branch-tag">Applied AI</span>
+          </div>
+        </article>
+
+        <!-- TECHNICAL -->
+        <article class="branch-card tech reveal d4" role="listitem" tabindex="0">
+          <div class="branch-watermark" aria-hidden="true">∑</div>
+          <div class="branch-chip" aria-hidden="true">∑ Technical</div>
+          <h3 class="branch-title">Technical</h3>
+          <p class="branch-desc">
+            Algorithms, competitive programming, problem-solving, and digital design
+            — for those who think in systems and patterns.
+          </p>
+          <div class="branch-tags" aria-label="Topics">
+            <span class="branch-tag">DSA</span>
+            <span class="branch-tag">Competitive</span>
+            <span class="branch-tag">Algorithms</span>
+            <span class="branch-tag">Design</span>
+            <span class="branch-tag">Problem Solving</span>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ ACTIVITIES — CONNECTED JOURNEY ══ -->
+  <section id="activities" class="section" aria-labelledby="act-h">
+    <div class="wrap">
+      <p class="section-label reveal">04 / What We Do</p>
+      <h2 id="act-h" class="headline-md reveal d1">The CodeLABS <span class="grad-accent">cycle.</span></h2>
+      <p class="reveal d2" style="color:var(--ink-2);margin-top:12px;font-size:16px;max-width:480px;">
+        An ongoing loop of building, competing, learning, and creating.
+      </p>
+
+      <div class="journey" role="list">
+
+        <!-- Left column -->
+        <div class="journey-col">
+
+          <article class="act-card reveal d2" role="listitem">
+            <div class="act-shape-wrap" aria-hidden="true"><div class="shape-cube"></div></div>
+            <h3 class="act-word grad-accent">Build</h3>
+            <p class="act-desc">Real-world projects that actually ship. Not tutorials — real things.</p>
+            <div class="act-details">
+              <span class="act-detail">Internal club projects</span>
+              <span class="act-detail">Branch-specific builds</span>
+              <span class="act-detail">Member-proposed ideas</span>
+            </div>
+          </article>
+
+          <article class="act-card reveal d3" role="listitem">
+            <div class="act-shape-wrap" aria-hidden="true"><div class="shape-diamond"></div></div>
+            <h3 class="act-word" style="background:linear-gradient(135deg,var(--cyan),#0f0f0f);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Learn</h3>
+            <p class="act-desc">Workshops and seminars taught by members, for members.</p>
+            <div class="act-details">
+              <span class="act-detail">Web frameworks &amp; system design</span>
+              <span class="act-detail">Model training &amp; ML deployment</span>
+              <span class="act-detail">DSA &amp; design sprints</span>
+            </div>
+          </article>
+
+        </div>
+
+        <!-- Connector -->
+        <div class="journey-connector" aria-hidden="true">
+          <div class="j-node"></div>
+          <div class="j-line"></div>
+          <div class="j-node" style="background:var(--coral);"></div>
+          <div class="j-line" style="background:linear-gradient(to bottom,var(--coral),var(--green));"></div>
+          <div class="j-node" style="background:var(--cyan);"></div>
+          <div class="j-line" style="background:linear-gradient(to bottom,var(--cyan),var(--green));"></div>
+          <div class="j-node" style="background:var(--green);"></div>
+        </div>
+
+        <!-- Right column -->
+        <div class="journey-col">
+
+          <article class="act-card reveal d3" role="listitem">
+            <div class="act-shape-wrap" aria-hidden="true"><div class="shape-pentagon"></div></div>
+            <h3 class="act-word grad-warm">Compete</h3>
+            <p class="act-desc">Hackathons are the heartbeat of CodeLABS — internal, external, and hosted.</p>
+            <div class="act-details">
+              <span class="act-detail">Intra-club hackathons</span>
+              <span class="act-detail">External hackathon teams</span>
+              <span class="act-detail">Hosted hackathons</span>
+            </div>
+          </article>
+
+          <article class="act-card reveal d4" role="listitem">
+            <div class="act-shape-wrap" aria-hidden="true"><div class="shape-hexagon"></div></div>
+            <h3 class="act-word" style="background:linear-gradient(135deg,var(--green),#3a3a3a);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Create</h3>
+            <p class="act-desc">Ideas turned into working solutions. Spec it, build it, ship it.</p>
+            <div class="act-details">
+              <span class="act-detail">Portfolio-grade work</span>
+              <span class="act-detail">Cross-branch collaboration</span>
+              <span class="act-detail">From idea to deployment</span>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ MERIT SYSTEM ══ -->
+  <section id="merit" class="section" aria-labelledby="merit-h">
+    <div class="wrap">
+      <p class="section-label reveal">05 / Progression</p>
+      <h2 id="merit-h" class="headline-md reveal d1">Progress by <span class="grad-accent">contribution.</span><br/>Not seniority.</h2>
+
+      <div class="merit-grid">
+
+        <!-- Tier track -->
+        <div class="merit-track reveal d2" role="list" aria-label="Merit tiers">
+
+          <div class="merit-tier" role="listitem" style="--tier-color:#dc143c;--tier-bg:rgba(136,136,255,0.08);" tabindex="0" aria-label="Initiate: 0 to 49 points">
+            <div class="tier-shape" style="--tier-bg:rgba(136,136,255,0.08);" aria-hidden="true"><div class="sh-triangle"></div></div>
+            <div class="tier-info">
+              <div class="tier-name">Initiate</div>
+              <div class="tier-pts">0 – 49 points</div>
+            </div>
+            <div class="tier-bar-wrap" aria-hidden="true"><div class="tier-bar" style="--tier-color:#dc143c;" data-w="0.1"></div></div>
+          </div>
+
+          <div class="merit-connector" aria-hidden="true"><div class="m-line" style="--t-from:#dc143c;--t-to:var(--accent);"></div></div>
+
+          <div class="merit-tier" role="listitem" style="--tier-color:var(--accent);" tabindex="0" aria-label="Builder: 50 to 149 points">
+            <div class="tier-shape" style="--tier-bg:rgba(220,20,60,0.08);" aria-hidden="true"><div class="sh-cube"></div></div>
+            <div class="tier-info">
+              <div class="tier-name">Builder</div>
+              <div class="tier-pts">50 – 149 points</div>
+            </div>
+            <div class="tier-bar-wrap" aria-hidden="true"><div class="tier-bar" style="--tier-color:var(--accent);" data-w="0.28"></div></div>
+          </div>
+
+          <div class="merit-connector" aria-hidden="true"><div class="m-line" style="--t-from:var(--accent);--t-to:var(--cyan);"></div></div>
+
+          <div class="merit-tier" role="listitem" style="--tier-color:var(--cyan);" tabindex="0" aria-label="Contributor: 150 to 299 points">
+            <div class="tier-shape" style="--tier-bg:rgba(26,26,26,0.08);" aria-hidden="true"><div class="sh-octagon"></div></div>
+            <div class="tier-info">
+              <div class="tier-name">Contributor</div>
+              <div class="tier-pts">150 – 299 points</div>
+            </div>
+            <div class="tier-bar-wrap" aria-hidden="true"><div class="tier-bar" style="--tier-color:var(--cyan);" data-w="0.5"></div></div>
+          </div>
+
+          <div class="merit-connector" aria-hidden="true"><div class="m-line" style="--t-from:var(--cyan);--t-to:var(--gold);"></div></div>
+
+          <div class="merit-tier" role="listitem" style="--tier-color:var(--gold);" tabindex="0" aria-label="Architect: 300 to 499 points">
+            <div class="tier-shape" style="--tier-bg:rgba(68,68,68,0.08);" aria-hidden="true"><div class="sh-rhombus"></div></div>
+            <div class="tier-info">
+              <div class="tier-name">Architect</div>
+              <div class="tier-pts">300 – 499 points</div>
+            </div>
+            <div class="tier-bar-wrap" aria-hidden="true"><div class="tier-bar" style="--tier-color:var(--gold);" data-w="0.75"></div></div>
+          </div>
+
+          <div class="merit-connector" aria-hidden="true"><div class="m-line" style="--t-from:var(--gold);--t-to:var(--green);"></div></div>
+
+          <div class="merit-tier" role="listitem" style="--tier-color:var(--green);" tabindex="0" aria-label="Core: 500 plus points">
+            <div class="tier-shape" style="--tier-bg:rgba(34,34,34,0.08);" aria-hidden="true"><div class="sh-hexcore"></div></div>
+            <div class="tier-info">
+              <div class="tier-name" style="color:var(--green);">Core</div>
+              <div class="tier-pts">500+ points</div>
+            </div>
+            <div class="tier-bar-wrap" aria-hidden="true"><div class="tier-bar" style="--tier-color:var(--green);" data-w="1.0"></div></div>
+          </div>
+
+        </div>
+
+        <!-- Note panel -->
+        <div class="reveal reveal-right d3">
+          <div class="merit-note-panel">
+            <p class="section-label" style="margin-bottom:12px;">How it works</p>
+            <h3>Rank reflects what you build.</h3>
+            <p>
+              CodeLABS uses a transparent, points-based merit system.
+              Your rank reflects your actual contribution — not how long you've been here,
+              and not who you know.
+            </p>
+            <div class="merit-stat">
+              <div class="merit-stat-num">5</div>
+              <div class="merit-stat-label">Tiers from<br/>Initiate to Core</div>
+            </div>
+            <div class="merit-stat" style="margin-top:12px;">
+              <div class="merit-stat-num" style="color:var(--green);">500+</div>
+              <div class="merit-stat-label">Points to reach<br/>Core status</div>
+            </div>
+          </div>
+
+          <div style="margin-top:20px;background:var(--surface);border:1.5px solid var(--border-soft);border-radius:var(--radius-sm);padding:20px 22px;">
+            <p style="font-family:var(--mono);font-size:11px;color:var(--muted);line-height:2;letter-spacing:0.03em;">
+              // Earn points through:<br/>
+              &gt; projects &amp; contributions<br/>
+              &gt; hackathon participation<br/>
+              &gt; workshops &amp; seminars<br/>
+              &gt; community activity
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ WHO SHOULD JOIN ══ -->
+  <section id="join-who" class="section" aria-labelledby="who-h">
+    <div class="wrap">
+      <p class="section-label reveal">06 / Who Should Join</p>
+      <h2 id="who-h" class="headline-md reveal d1">CodeLABS is for <span class="grad-accent">builders.</span></h2>
+
+      <div class="join-grid" role="list">
+        <div class="join-card reveal d1" role="listitem">
+          <div class="join-check" aria-hidden="true">✓</div>
+          <p class="join-text">You want to build real projects, not just study theory.</p>
+        </div>
+        <div class="join-card reveal d2" role="listitem">
+          <div class="join-check" aria-hidden="true">✓</div>
+          <p class="join-text">You're interested in web dev, AI/ML, or competitive programming.</p>
+        </div>
+        <div class="join-card reveal d2" role="listitem">
+          <div class="join-check" aria-hidden="true">✓</div>
+          <p class="join-text">You want to compete in hackathons and technical challenges.</p>
+        </div>
+        <div class="join-card reveal d3" role="listitem">
+          <div class="join-check" aria-hidden="true">✓</div>
+          <p class="join-text">You want a portfolio of real work, not participation certificates.</p>
+        </div>
+        <div class="join-card reveal d3" role="listitem">
+          <div class="join-check" aria-hidden="true">✓</div>
+          <p class="join-text">You want to be judged by what you build, not how long you've been around.</p>
+        </div>
+        <div class="join-card reveal d4" role="listitem">
+          <div class="join-check" aria-hidden="true">✓</div>
+          <p class="join-text">You want to collaborate with other technically-minded students.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ FINAL CTA ══ -->
+  <section id="final-cta" aria-labelledby="cta-h">
+    <div class="cta-inner">
+      <p class="cta-mono-tag reveal">// ready to build something great?</p>
+      <h2 id="cta-h" class="headline-lg reveal d1" style="color:#fff;">
+        Choose your branch.<br/>
+        <span style="color:#a00e2b;">Build real things.</span>
+      </h2>
+      <p class="cta-sub reveal d2">
+        Compete. Learn. Grow.<br/>
+        Contribute to CodeLABS and advance by what you create — not how long you wait.
+      </p>
+      <div class="cta-btns reveal d3">
+        <a class="btn btn-apply-dark btn-arrow" href="https://apply.thecodelabs.org/" target="_blank" rel="noopener noreferrer" aria-label="Apply to CodeLABS">
+          Apply Now <span class="arr" aria-hidden="true">→</span>
+        </a>
+        <a class="btn btn-ghost btn-arrow" href="https://thecodelabs.org/" target="_blank" rel="noopener noreferrer" aria-label="Explore CodeLABS">
+          Explore CodeLABS <span class="arr" aria-hidden="true">↗</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ FOOTER ══ -->
+  <footer role="contentinfo">
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <img src="logo.png" alt="" aria-hidden="true" width="28" height="28" />
+        CodeLABS
+      </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a class="footer-link" href="https://thecodelabs.org/" target="_blank" rel="noopener noreferrer">Website</a>
+        <a class="footer-link" href="https://apply.thecodelabs.org/" target="_blank" rel="noopener noreferrer">Apply</a>
+      </nav>
+      <p class="footer-tag">Build something Great.</p>
+    </div>
+  </footer>
+
+  <!-- ══ JAVASCRIPT ══ -->
+  <script>
+    /* ── Navbar scroll ── */
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 40);
+    }, { passive: true });
+
+    /* ── Intersection observer for reveal + tier bars ── */
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (!e.isIntersecting) return;
+        e.target.classList.add('vis');
+        // animate tier bars
+        e.target.querySelectorAll('.tier-bar').forEach(bar => {
+          const w = parseFloat(bar.dataset.w || 1);
+          bar.style.transform = `scaleX(${w})`;
+          bar.classList.add('vis');
+        });
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -36px 0px' });
+
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+    // also observe each tier bar individually so they animate on scroll
+    const ioBar = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          const w = parseFloat(e.target.dataset.w || 1);
+          setTimeout(() => {
+            e.target.style.transform = `scaleX(${w})`;
+          }, 300);
+        }
+      });
+    }, { threshold: 0.8 });
+    document.querySelectorAll('.tier-bar').forEach(b => ioBar.observe(b));
+
+    /* ── Typed terminal effect ── */
+    const lines = document.querySelectorAll('.terminal-body > div');
+    lines.forEach((line, i) => {
+      line.style.opacity = '0';
+      line.style.transform = 'translateX(-8px)';
+      line.style.transition = `opacity 0.3s ease, transform 0.3s ease`;
+    });
+    const termIO = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) return;
+      lines.forEach((line, i) => {
+        setTimeout(() => {
+          line.style.opacity = '1';
+          line.style.transform = 'none';
+        }, i * 120);
+      });
+      termIO.disconnect();
+    }, { threshold: 0.4 });
+    const terminal = document.querySelector('.terminal');
+    if (terminal) termIO.observe(terminal);
+
+    /* ── Word pill hover ── */
+    document.querySelectorAll('.a-pill').forEach(p => {
+      p.addEventListener('mouseenter', () => p.style.background = 'var(--accent-light)');
+      p.addEventListener('mouseleave', () => p.style.background = 'var(--surface-tint)');
+    });
+  </script>
+</body>
+</html>
